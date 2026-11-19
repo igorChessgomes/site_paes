@@ -54,13 +54,15 @@
 
             <!-- Botões principais -->
             <button id="botao_PIN">CADASTRO</button>
-            <button id="botao_VOTAR" disabled>VOTAR</button>
+            <button id="botao_VOTAR">VOTAR</button>
 
             <!-- Botão de validação do PIN -->
             <div id="registro" class="oculto">
                 <input type="password" id="input_PIN" placeholder="Seu PIN">
-                <input type="text" id="QUEM-TIROU" placeholder="Quem você tirou?">
-                <input type="text" id="PRESENTE" placeholder="Qual foi o presente?">
+                <input type="text" id="QUEM-TIROU" placeholder="Quem é seu amigo?">
+                <input type="text" id="PRESENTE" placeholder="Qual foi o presente do amigo?">
+                <input type="text" id="QUEM-INIMIGO" placeholder="Quem é seu inimigo?">
+                <input type="text" id="PRESENTE-INIMIGO" placeholder="Qual foi o presente do inimigo?">
                 <button id="botao_VALIDAR">VALIDAR</button>
             </div>
 
@@ -114,7 +116,7 @@
                     <tr>
                         <th>Posição</th>
                         <th>Nome</th>
-                        <th>Presenteado</th>
+                        <th>Amigo</th>
                         <th>Presente</th>
                         <th>Nota</th>
                     </tr>

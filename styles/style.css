@@ -281,10 +281,27 @@ header{
   border-radius: 50%;
 }
 
-,slider input:checked + .slider {
+.switch input:checked + .slider {
   background-color: #e74c3c;
 }
 
 .switch input:checked + .slider:before {
   transform: translateX(26px);
+}
+
+/* Tema levemente mais escuro para o modo INIMIGO */
+#PODIO.modo-inimigo .DEGRAU_1 { background-color: #b84312; }
+#PODIO.modo-inimigo .DEGRAU_2 { background-color: #9c6b19; }
+#PODIO.modo-inimigo .DEGRAU_3 { background-color: #b5ae19; color: #222; }
+
+#CLASSIFICACAO.modo-inimigo thead {
+    background-color: #67511E;
+}
+#CLASSIFICACAO.modo-inimigo tbody tr:nth-child(odd) {
+    background-color: #e8dfd5;
+    color: #222;
+}
+#CLASSIFICACAO.modo-inimigo tbody tr:nth-child(even) {
+    background-color: #d6c7b4;
+    color: #222;
 }
