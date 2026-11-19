@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pães</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <!--CSS do bootstrap 5.3.0-->
+    <link rel="stylesheet" href="styles/css-bootstrap/bootstrap.min.css">
+    <!--CSS personalizado-->
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/mobile.css">
+
+    <!--icone-->
+    <link rel="icon" type="image/x-icon" href="imagens/favicon_io/favicon.ico">
+
+</head>
+<body>
+
+    <!--CABEÇALHO-->
+    <header>
+        <!--menu-->
+        <nav id="MENU">
+            
+            <!--logo-->
+            <a href="index.html" class="logo">
+                <img src="imagens/logo_pao-backgroun_menu.png" alt="Logo do Pão Oficial" id="logo">
+                <span id="nome_grupo">Pães</span>
+            </a>
+
+            <!--listagem de links do menu-->
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="sobre.html">Sobre</a></li>
+                <li><a href="votacao.html" class="ativo">Votação</a></li>
+                <li><a href="formandos.html">Formandos</a></li>
+            </ul>
+
+        </nav>
+        
+    
+    </header>
+
+    <!--MAIN-->
+
+<main>
+
+        <!-- Área Interativa -->
+        <section id="CONTROLE">
+
+            <!-- Botões principais -->
+            <button id="botao_PIN">CADASTRO</button>
+            <button id="botao_VOTAR" disabled>VOTAR</button>
+
+            <!-- Botão de validação do PIN -->
+            <div id="registro" class="oculto">
+                <input type="password" id="input_PIN" placeholder="Seu PIN">
+                <input type="text" id="QUEM-TIROU" placeholder="Quem você tirou?">
+                <input type="text" id="PRESENTE" placeholder="Qual foi o presente?">
+                <button id="botao_VALIDAR">VALIDAR</button>
+            </div>
+
+            <!-- Botão do voto -->
+            <div id="PAINEL-VOTACAO" class="oculto">
+                <input type="password" id="PIN_VOTO" placeholder="Digite o PIN">
+                <button id="botao_ENTRAR_VOTO">ACESSAR LISTA</button>
+
+                <div id="LISTA-PRESENTES">
+                    <!-- A lista de presentes será preenchida dinamicamente via JavaScript -->
+                </div>
+
+                <button id="botao_VOTAR_CONFIRMAR" class="oculto">CONFIRMAR VOTOS</button>
+            </div>
+
+            <!-- Painel ADM (só aparece com o PIN correto) -->
+            <div id="PAINEL-ADM" class="oculto">
+                <button id="liberar-voto">Liberar Voto</button>
+                <button id="novo-evento">Novo Evento</button>
+            </div>
+
+        </section>
+
+        <!-- Pódio -->
+        <section id="PODIO">
+            <h2>Pódio</h2>
+            <div class="DEGRAUS">
+                <div class="degrau DEGRAU_2"><span class="nome">---</span></div>
+                <div class="degrau DEGRAU_1"><span class="nome">---</span></div>
+                <div class="degrau DEGRAU_3"><span class="nome">---</span></div>
+            </div>
+        </section>
+
+        <!-- Tabela de classificação -->
+        <section id="CLASSIFICACAO">
+            <h2>Classificação</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Posição</th>
+                        <th>Nome</th>
+                        <th>Presenteado</th>
+                        <th>Presente</th>
+                        <th>Nota</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-corpo">
+                    <!-- Conteúdo da tabela será preenchido dinamicamente via JavaScript -->
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <!--Rodapé-->
+
+    <footer></footer>
+
+ <!--JS do bootstrap 5.3.0-->   
+ 
+ <script src="JS/JS-bootstrap/bootstrap.bundle.min.js"></script>
+ 
+ <!--script personalizado-->
+ <script src="JS/script.js"></script>
+
+</body>
+</html>

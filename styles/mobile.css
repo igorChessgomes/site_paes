@@ -1,0 +1,85 @@
+/*Cores:
+    #FFEEDE
+    #FEF82E
+    #DB9C31
+    #FF6F2B
+    #67511E
+
+    FONTES:
+    
+    .montserrat-<uniquifier> {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: <weight>;
+    font-style: normal;
+    }
+*/
+/* Ajuste para dispositivos móveis */
+@media (max-width: 768px) {
+
+    #MENU {
+        flex-direction: column;  /* Coloca a logo em cima e os botões embaixo */
+        gap: 15px;               /* Espaço entre a logo e os botões */
+        padding: 15px;           /* Diminui as margens laterais para ganhar espaço */
+    }
+
+    #MENU ul {
+        flex-wrap: wrap;         /* Se não couberem todos na mesma linha, quebra para a linha de baixo */
+        justify-content: center; /* Centraliza os botões na tela do celular */
+        gap: 10px;
+    }
+
+    #MENU ul a {
+        padding: 8px 14px;       /* Botões levemente menores para caberem melhor */
+        font-size: 14px;
+    }
+
+    header {
+        max-height: none;          /* Reduz a altura máxima do cabeçalho para caber melhor na tela do celular */
+        height: auto;            /* Reduz a altura do cabeçalho para caber melhor na tela do celular */
+    }
+
+    /* eventos buntton mobile.css */
+
+    #CONTROLE {
+        margin: 20px auto;
+        padding: 0 10px;
+    }
+
+    #CONTROLE button {
+        width: 100%;      /* Faz os botões ocuparem a linha toda, um embaixo do outro */
+        margin: 6px 0;
+    }
+
+    #CONTROLE > div {
+        padding: 15px;    /* Reduz o enchimento interno dos cartões abertos */
+    }
+
+    .DEGRAUS{
+        gap: 8px;
+        padding: 0 10px;
+    }
+
+    .degrau{
+        min-width: 80px;  /* Reduz a largura mínima dos degraus para caber melhor na tela do celular */
+        width: 30%;      /* Faz os degraus ocuparem a linha toda, um embaixo do outro */
+        padding: 10px 5px;      /* Reduz o enchimento interno dos degraus */
+    }
+
+    #CLASSIFICACAO{
+        padding: 0 10px;
+    }
+
+    #CLASSIFICACAO table{
+        display: block;  /* Exibe a tabela como um bloco para melhor visualização em dispositivos móveis */
+        overflow-x: auto;  /* Permite rolagem horizontal se a tabela for maior que a tela */   
+        white-space: nowrap;  /* Impede quebras de linha dentro da tabela */ 
+    }
+
+#CLASSIFICACAO table th, #CLASSIFICACAO table td {
+        padding: 10px 12px;  /* Reduz o preenchimento das células da tabela para caber melhor na tela do celular */
+        font-size: 14px;  /* Reduz o tamanho da fonte das células da tabela para caber melhor na tela do celular */
+    }
+
+
+}

@@ -1,0 +1,237 @@
+/*Cores:
+    #FFEEDE
+    #FEF82E
+    #DB9C31
+    #FF6F2B
+    #67511E
+
+    FONTES:
+    
+    .montserrat-<uniquifier> {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: <weight>;
+    font-style: normal;
+    }
+*/
+/*definições globais*/
+*{padding: 0; margin: 0; box-sizing: border-box;}
+
+/*definições de cabeçalho*/
+header{
+    max-width: 100%;
+    max-height: 100px;
+    height: 90vh;
+    background: linear-gradient(rgba(245, 248, 46, 0.1), rgba(255, 111, 43, 0.1)), url("../imagens/HeaderCapa.jpg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+
+    position: relative;
+}
+
+#MENU{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+    background-color: rgba(34, 49, 39, 0.5);  
+}
+
+#MENU .logo{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+/* Imagem da logo */
+#MENU img{
+    width: 100px;
+    height: 100px;
+    margin-left: 20px;
+}
+
+/*menu */
+#MENU ul{
+    display: flex;
+    gap: 20px;
+    list-style: none; ;
+    margin-right: 0;
+    padding: 0;
+}
+
+/* Efeito ao clicar nos links */
+
+#MENU ul a{
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: rgba(255, 111, 43, 0.6);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+/* Efeito ao passar o mouse sobre os links */
+#MENU ul a:hover{ 
+    background-color: rgba(255, 111, 43, 0.9);
+    color: rgba(255, 111, 43, 0.6);
+}
+
+/* pagina atual */
+#MENU ul a.ativo{
+    background-color: #67511E;
+    color: #FFEEDE;
+}
+
+#PODIO{
+    max-width: 700px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.DEGRAUS{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Alinha os degraus na parte inferior */
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.degrau{
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 12px 12px 0 0; /* Arredonda apenas os cantos superiores */
+    color: #fff;
+    font-weight: bold;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.DEGRAU_1{
+    background-color: #FF6F2B;
+    height: 190px;
+}
+
+.DEGRAU_2{
+    background-color: #DB9C31;
+    height: 150px;
+}
+
+.DEGRAU_3{
+    background-color: #FEF82E;
+    height: 110px;
+}
+.DEGRAUS .posicao{
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.DEGRAUS .nome{
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+#CLASSIFICACAO{
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+    padding: 0 20px; /* Adiciona espaçamento lateral */
+}
+
+#CLASSIFICACAO table{
+    width: 100%;
+    border-collapse: collapse;
+    background-color: black;
+    border-radius: 8px;
+    overflow: hidden; /* Garante que os cantos arredondados sejam aplicados corretamente*/
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+#CLASSIFICACAO th, #CLASSIFICACAO td{
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+#CLASSIFICACAO thead{
+    background-color: #FF6F2B;
+    color: #fff;
+}
+
+#CLASSIFICACAO tbody tr:nth-child(odd){/*Efeito de linha par */
+    background-color: #ffffff;
+    color: #333333;
+}
+
+#CLASSIFICACAO tbody tr:nth-child(even){/*Efeito de linha par */
+    background-color: rgba(219, 156, 49, 0.22); /* Dourado suave translúcido */
+    color: #f8c651;
+}
+
+#CLASSIFICACAO tbody tr:hover{ /*Efeito de hover */
+    background-color: rgba(255, 111, 43, 0.15);;
+}
+
+#CONTROLE{
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+    padding: 0 20px; /* Adiciona espaçamento lateral */
+}
+
+#CONTROLE button{
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #FF6F2B;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    
+}
+
+.oculto{
+    display: none !important;
+}
+
+#CONTROLE button:hover:not(:disabled){
+    background-color: #DB9C31;
+}
+
+#CONTROLE button:disabled{
+    background-color: #999;
+    color: #67511E;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+#CONTROLE > div{
+    background-color: #FFEEDE;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#CONTROLE{
+    padding: 20px;
+    border: 1px solid #DB9C31;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box; 
+}
