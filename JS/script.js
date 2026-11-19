@@ -28,14 +28,14 @@ const PARTICIPANTES = [
 // =========================================================
 // 2. ESTADO DO EVENTO E SINCRONIZAÇÃO COM O FIREBASE
 // =========================================================
-let modoAtual = "amigo"; // "amigo" ou "inimigo"
+let modoAtual = "amigo"; // Controla apenas o Pódio e a Tabela de Classificação
 let votanteAtual = null;
 
 let estadoEvento = {
-    amigo: [],   // { pin, nome, presenteado, presente, somaNotas, qtdVotos }
-    inimigo: [], // { pin, nome, presenteado, presente, somaNotas, qtdVotos }
+    amigo: [],
+    inimigo: [],
     votosDados: {
-        amigo: {},   // Ex: { "0001": ["000X", "0010"] } -> PINs em quem Marcela já votou
+        amigo: {},
         inimigo: {}
     }
 };
@@ -104,17 +104,15 @@ const secaoClassificacao = document.getElementById("CLASSIFICACAO");
 const colunaModo = document.getElementById("coluna-modo");
 const tabelaCorpo = document.getElementById("tabela-corpo");
 
-// Garante que o botão VOTAR funcione em tempo integral
 if (btnVotar) btnVotar.disabled = false;
 
 // =========================================================
-// 4. SWITCH DE MODO (AMIGO / INIMIGO)
+// 4. SWITCH DE MODO (ALTERNA PÓDIO E TABELA DE CLASSIFICAÇÃO)
 // =========================================================
 if (switchModo) {
     switchModo.addEventListener("change", () => {
         modoAtual = switchModo.checked ? "inimigo" : "amigo";
 
-        // Aplica ou remove o tema mais escuro no Pódio e na Tabela
         if (modoAtual === "inimigo") {
             secaoPodio.classList.add("modo-inimigo");
             secaoClassificacao.classList.add("modo-inimigo");
@@ -123,11 +121,6 @@ if (switchModo) {
             secaoPodio.classList.remove("modo-inimigo");
             secaoClassificacao.classList.remove("modo-inimigo");
             if (colunaModo) colunaModo.textContent = "Amigo";
-        }
-
-        // Se o painel de votação estiver aberto para alguém, atualiza a lista na hora
-        if (!painelVotacao.classList.contains("oculto") && votanteAtual) {
-            montarListaDeVotacao(votanteAtual.pin);
         }
 
         atualizarTela();
@@ -181,7 +174,6 @@ if (btnValidarCadastro) {
             return;
         }
 
-        // Ativa painel ADM se for o seu PIN
         if (usuario.admin) {
             painelAdm.classList.remove("oculto");
             if (!amigo && !presenteAmigo && !inimigo && !presenteInimigo) {
@@ -197,7 +189,6 @@ if (btnValidarCadastro) {
 
         await carregarDoBanco();
 
-        // Impede cadastro duplicado do mesmo PIN
         const jaCadastrado = estadoEvento.amigo.some(r => r.pin === pinDigitado);
         if (jaCadastrado) {
             limparCamposCadastro();
@@ -237,7 +228,7 @@ function limparCamposCadastro() {
 }
 
 // =========================================================
-// 7. VOTAÇÃO INCREMENTAL OU EM LOTE (SEM REPETIR PESSOA)
+// 7. VOTAÇÃO COM DUAS LISTAS SEPARADAS (AMIGO E INIMIGO)
 // =========================================================
 if (btnAcessarLista) {
     btnAcessarLista.addEventListener("click", async () => {
@@ -259,37 +250,51 @@ if (btnAcessarLista) {
 
         await carregarDoBanco();
         votanteAtual = usuario;
-        montarListaDeVotacao(usuario.pin);
+        montarListasDeVotacao(usuario.pin);
     });
 }
 
-function montarListaDeVotacao(pinDoVotante) {
-    divListaPresentes.innerHTML = "";
+function criarBlocoCategoria(titulo, tipoModo, corBorda, pinDoVotante) {
+    const lista = estadoEvento[tipoModo] || [];
+    const jaVotados = estadoEvento.votosDados[tipoModo][pinDoVotante] || [];
 
-    const listaDoModo = estadoEvento[modoAtual] || [];
-    const jaVotadosPorEstePin = estadoEvento.votosDados[modoAtual][pinDoVotante] || [];
-
-    // Filtra: remove o próprio presente do votante E remove quem ele já votou antes
-    const disponiveisParaVotar = listaDoModo.filter(
-        item => item.pin !== pinDoVotante && !jaVotadosPorEstePin.includes(item.pin)
+    const disponiveis = lista.filter(
+        item => item.pin !== pinDoVotante && !jaVotados.includes(item.pin)
     );
 
-    if (disponiveisParaVotar.length === 0) {
-        divListaPresentes.innerHTML = `<p>Nenhum presente pendente para você votar no modo <strong>${modoAtual.toUpperCase()}</strong>.</p>`;
-        btnConfirmarVotos.classList.add("oculto");
-        return;
+    const bloco = document.createElement("div");
+    bloco.style.border = `2px solid ${corBorda}`;
+    bloco.style.borderRadius = "8px";
+    bloco.style.padding = "12px";
+    bloco.style.marginTop = "12px";
+    bloco.style.backgroundColor = "#fff";
+
+    const cabecalho = document.createElement("h3");
+    cabecalho.textContent = titulo;
+    cabecalho.style.color = corBorda;
+    cabecalho.style.marginBottom = "10px";
+    cabecalho.style.fontSize = "18px";
+    bloco.appendChild(cabecalho);
+
+    if (disponiveis.length === 0) {
+        const vazio = document.createElement("p");
+        vazio.textContent = "Nenhum presente pendente nesta categoria.";
+        vazio.style.fontSize = "14px";
+        vazio.style.color = "#666";
+        bloco.appendChild(vazio);
+        return { bloco, temItens: false };
     }
 
-    disponiveisParaVotar.forEach(item => {
+    disponiveis.forEach(item => {
         const card = document.createElement("div");
-        card.style.borderBottom = "1px solid #DB9C31";
-        card.style.padding = "10px 0";
+        card.style.borderBottom = "1px solid #eee";
+        card.style.padding = "8px 0";
         card.style.textAlign = "left";
 
         card.innerHTML = `
-            <p><strong>${item.nome}</strong> deu <strong>${item.presente}</strong> para <em>${item.presenteado}</em></p>
+            <p style="margin-bottom: 4px;"><strong>${item.nome}</strong> deu <strong>${item.presente}</strong> para <em>${item.presenteado}</em></p>
             <label>Avaliar: 
-                <select class="select-nota" data-pin-alvo="${item.pin}">
+                <select class="select-nota" data-modo="${tipoModo}" data-pin-alvo="${item.pin}">
                     <option value="">Pular por enquanto</option>
                     <option value="5">⭐⭐⭐⭐⭐ (5)</option>
                     <option value="4">⭐⭐⭐⭐ (4)</option>
@@ -299,21 +304,37 @@ function montarListaDeVotacao(pinDoVotante) {
                 </select>
             </label>
         `;
-        divListaPresentes.appendChild(card);
+        bloco.appendChild(card);
     });
 
-    btnConfirmarVotos.classList.remove("oculto");
+    return { bloco, temItens: true };
+}
+
+function montarListasDeVotacao(pinDoVotante) {
+    divListaPresentes.innerHTML = "";
+
+    const secaoAmigo = criarBlocoCategoria("Votação: AMIGO", "amigo", "#FF6F2B", pinDoVotante);
+    const secaoInimigo = criarBlocoCategoria("Votação: INIMIGO", "inimigo", "#67511E", pinDoVotante);
+
+    divListaPresentes.appendChild(secaoAmigo.bloco);
+    divListaPresentes.appendChild(secaoInimigo.bloco);
+
+    if (secaoAmigo.temItens || secaoInimigo.temItens) {
+        btnConfirmarVotos.classList.remove("oculto");
+    } else {
+        btnConfirmarVotos.classList.add("oculto");
+    }
 }
 
 if (btnConfirmarVotos) {
     btnConfirmarVotos.addEventListener("click", async () => {
         if (!votanteAtual) return;
 
-        // Pega apenas os selects onde a pessoa escolheu uma nota (não deixou em "Pular")
         const votosEscolhidos = [];
         document.querySelectorAll(".select-nota").forEach(select => {
             if (select.value !== "") {
                 votosEscolhidos.push({
+                    modo: select.getAttribute("data-modo"),
                     pinAlvo: select.getAttribute("data-pin-alvo"),
                     nota: Number(select.value)
                 });
@@ -324,16 +345,15 @@ if (btnConfirmarVotos) {
 
         await carregarDoBanco();
 
-        if (!estadoEvento.votosDados[modoAtual][votanteAtual.pin]) {
-            estadoEvento.votosDados[modoAtual][votanteAtual.pin] = [];
-        }
-
-        const jaVotados = estadoEvento.votosDados[modoAtual][votanteAtual.pin];
-
         votosEscolhidos.forEach(voto => {
-            // Garantia dupla: nunca computa se já votou nessa pessoa antes
+            if (!estadoEvento.votosDados[voto.modo][votanteAtual.pin]) {
+                estadoEvento.votosDados[voto.modo][votanteAtual.pin] = [];
+            }
+
+            const jaVotados = estadoEvento.votosDados[voto.modo][votanteAtual.pin];
+
             if (!jaVotados.includes(voto.pinAlvo)) {
-                const registroAlvo = estadoEvento[modoAtual].find(r => r.pin === voto.pinAlvo);
+                const registroAlvo = estadoEvento[voto.modo].find(r => r.pin === voto.pinAlvo);
                 if (registroAlvo) {
                     registroAlvo.somaNotas += voto.nota;
                     registroAlvo.qtdVotos += 1;
@@ -344,7 +364,6 @@ if (btnConfirmarVotos) {
 
         await salvarNoBanco();
 
-        // Fecha silenciosamente sem abrir caixas de diálogo
         inputPinVoto.value = "";
         divListaPresentes.innerHTML = "";
         btnConfirmarVotos.classList.add("oculto");
