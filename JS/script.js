@@ -1,4 +1,10 @@
 // =========================================================
+// COLE AQUI A URL DO SEU FIREBASE (SEM BARRA NO FINAL)
+// Exemplo: "https://site-oficial-paes-default-rtdb.firebaseio.com"
+// =========================================================
+const URL_BANCO = "https://site-oficial-paes-default-rtdb.firebaseio.com/";
+
+// =========================================================
 // 1. LISTA FIXA DE PARTICIPANTES (16 convidados)
 // =========================================================
 const PARTICIPANTES = [
@@ -21,16 +27,46 @@ const PARTICIPANTES = [
 ];
 
 // =========================================================
-// 2. MEMÓRIA DINÂMICA DO EVENTO (Salva no navegador)
+// 2. ESTADO DO EVENTO E SINCRONIZAÇÃO NA NUVEM (FIREBASE)
 // =========================================================
-let estadoEvento = JSON.parse(localStorage.getItem("amigoOcultoPaes")) || {
-    registros: [],            // Guarda { pin, nome, presenteado, presente, somaNotas, qtdVotos }
-    votantesConfirmados: [],  // Guarda os PINs de quem já travou o voto
+let estadoEvento = {
+    registros: [],
+    votantesConfirmados: [],
     liberadoManualmente: false
 };
 
-function salvarEstado() {
-    localStorage.setItem("amigoOcultoPaes", JSON.stringify(estadoEvento));
+async function carregarDoBanco() {
+    if (!URL_BANCO.startsWith("http")) return;
+    try {
+        const resposta = await fetch(`${URL_BANCO}/evento.json`);
+        const dados = await resposta.json();
+        if (dados) {
+            estadoEvento = {
+                registros: dados.registros || [],
+                votantesConfirmados: dados.votantesConfirmados || [],
+                liberadoManualmente: dados.liberadoManualmente || false
+            };
+        } else {
+            estadoEvento = { registros: [], votantesConfirmados: [], liberadoManualmente: false };
+        }
+        atualizarTela();
+    } catch (erro) {
+        console.error("Erro ao sincronizar:", erro);
+    }
+}
+
+async function salvarNoBanco() {
+    if (!URL_BANCO.startsWith("http")) return;
+    try {
+        await fetch(`${URL_BANCO}/evento.json`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(estadoEvento)
+        });
+        atualizarTela();
+    } catch (erro) {
+        console.error("Erro ao salvar:", erro);
+    }
 }
 
 // =========================================================
@@ -60,118 +96,125 @@ const tabelaCorpo = document.getElementById("tabela-corpo");
 // =========================================================
 // 4. CONTROLE DE ABERTURA DOS PAINÉIS PRINCIPAIS
 // =========================================================
-btnCadastro.addEventListener("click", () => {
-    painelRegistro.classList.toggle("oculto");
-    painelVotacao.classList.add("oculto");
-    painelAdm.classList.add("oculto"); // Garante que o ADM suma ao alternar
-    if (!painelRegistro.classList.contains("oculto")) {
-        inputPinCadastro.focus();
-    }
-});
+if (btnCadastro) {
+    btnCadastro.addEventListener("click", () => {
+        painelRegistro.classList.toggle("oculto");
+        painelVotacao.classList.add("oculto");
+        painelAdm.classList.add("oculto");
+        if (!painelRegistro.classList.contains("oculto")) {
+            inputPinCadastro.focus();
+        }
+    });
+}
 
-btnVotar.addEventListener("click", () => {
-    painelVotacao.classList.toggle("oculto");
-    painelRegistro.classList.add("oculto");
-    painelAdm.classList.add("oculto"); // Garante que o ADM suma ao alternar
-    divListaPresentes.innerHTML = "";
-    btnConfirmarVotos.classList.add("oculto");
-    if (!painelVotacao.classList.contains("oculto")) {
-        inputPinVoto.focus();
-    }
-});
+if (btnVotar) {
+    btnVotar.addEventListener("click", () => {
+        painelVotacao.classList.toggle("oculto");
+        painelRegistro.classList.add("oculto");
+        painelAdm.classList.add("oculto");
+        divListaPresentes.innerHTML = "";
+        btnConfirmarVotos.classList.add("oculto");
+        if (!painelVotacao.classList.contains("oculto")) {
+            inputPinVoto.focus();
+        }
+    });
+}
 
 // =========================================================
 // 5. REGRA DE CADASTRO E ATIVAÇÃO DO PAINEL ADM
 // =========================================================
-btnValidarCadastro.addEventListener("click", () => {
-    const pinDigitado = inputPinCadastro.value.trim();
-    const presenteado = inputQuemTirou.value.trim();
-    const presente = inputPresente.value.trim();
+if (btnValidarCadastro) {
+    btnValidarCadastro.addEventListener("click", async () => {
+        const pinDigitado = inputPinCadastro.value.trim();
+        const presenteado = inputQuemTirou.value.trim();
+        const presente = inputPresente.value.trim();
 
-    const usuario = PARTICIPANTES.find(p => p.pin === pinDigitado);
-    if (!usuario) {
-        painelAdm.classList.add("oculto");
-        inputPinCadastro.value = "";
-        inputPinCadastro.focus();
-        return;
-    }
-
-    // Controla visibilidade do ADM estritamente pelo usuário atual
-    if (usuario.admin) {
-        painelAdm.classList.remove("oculto");
-        if (!presenteado && !presente) {
+        const usuario = PARTICIPANTES.find(p => p.pin === pinDigitado);
+        if (!usuario) {
+            painelAdm.classList.add("oculto");
             inputPinCadastro.value = "";
+            inputPinCadastro.focus();
+            return;
+        }
+
+        if (usuario.admin) {
+            painelAdm.classList.remove("oculto");
+            if (!presenteado && !presente) {
+                inputPinCadastro.value = "";
+                painelRegistro.classList.add("oculto");
+                return;
+            }
+        } else {
+            painelAdm.classList.add("oculto");
+        }
+
+        if (!presenteado || !presente) return;
+
+        await carregarDoBanco();
+
+        const jaCadastrado = estadoEvento.registros.some(r => r.pin === pinDigitado);
+        if (jaCadastrado) {
+            inputPinCadastro.value = "";
+            inputQuemTirou.value = "";
+            inputPresente.value = "";
             painelRegistro.classList.add("oculto");
             return;
         }
-    } else {
-        painelAdm.classList.add("oculto");
-    }
 
-    if (!presenteado || !presente) return;
+        estadoEvento.registros.push({
+            pin: usuario.pin,
+            nome: usuario.nome,
+            presenteado: presenteado,
+            presente: presente,
+            somaNotas: 0,
+            qtdVotos: 0
+        });
 
-    // Impede duplicidade silenciosamente e fecha o painel
-    const jaCadastrado = estadoEvento.registros.some(r => r.pin === pinDigitado);
-    if (jaCadastrado) {
+        await salvarNoBanco();
+
         inputPinCadastro.value = "";
         inputQuemTirou.value = "";
         inputPresente.value = "";
         painelRegistro.classList.add("oculto");
-        return;
-    }
-
-    // Salva o novo registro e atualiza a tela mantendo a posição atual
-    estadoEvento.registros.push({
-        pin: usuario.pin,
-        nome: usuario.nome,
-        presenteado: presenteado,
-        presente: presente,
-        somaNotas: 0,
-        qtdVotos: 0
     });
-
-    salvarEstado();
-    atualizarTela();
-
-    inputPinCadastro.value = "";
-    inputQuemTirou.value = "";
-    inputPresente.value = "";
-    painelRegistro.classList.add("oculto");
-});
+}
 
 // =========================================================
 // 6. REGRA DE VOTAÇÃO E TRAVA DEFINITIVA
 // =========================================================
 let votanteAtual = null;
 
-btnAcessarLista.addEventListener("click", () => {
-    const pinDigitado = inputPinVoto.value.trim();
-    const usuario = PARTICIPANTES.find(p => p.pin === pinDigitado);
+if (btnAcessarLista) {
+    btnAcessarLista.addEventListener("click", async () => {
+        const pinDigitado = inputPinVoto.value.trim();
+        const usuario = PARTICIPANTES.find(p => p.pin === pinDigitado);
 
-    if (!usuario) {
-        painelAdm.classList.add("oculto");
-        inputPinVoto.value = "";
-        inputPinVoto.focus();
-        return;
-    }
+        if (!usuario) {
+            painelAdm.classList.add("oculto");
+            inputPinVoto.value = "";
+            inputPinVoto.focus();
+            return;
+        }
 
-    // Só mostra ADM se for o seu PIN; se for outro convidado, esconde
-    if (usuario.admin) {
-        painelAdm.classList.remove("oculto");
-    } else {
-        painelAdm.classList.add("oculto");
-    }
+        if (usuario.admin) {
+            painelAdm.classList.remove("oculto");
+        } else {
+            painelAdm.classList.add("oculto");
+        }
 
-    if (estadoEvento.votantesConfirmados.includes(pinDigitado)) {
-        inputPinVoto.value = "";
-        divListaPresentes.innerHTML = "<p>Seu voto já foi registrado e travado.</p>";
-        btnConfirmarVotos.classList.add("oculto");
-        return;
-    }
+        await carregarDoBanco();
 
-    votanteAtual = usuario;
-    montarListaDeVotacao(usuario.pin);
-});
+        if (estadoEvento.votantesConfirmados.includes(pinDigitado)) {
+            inputPinVoto.value = "";
+            divListaPresentes.innerHTML = "<p>Seu voto já foi registrado e travado.</p>";
+            btnConfirmarVotos.classList.add("oculto");
+            return;
+        }
+
+        votanteAtual = usuario;
+        montarListaDeVotacao(usuario.pin);
+    });
+}
 
 function montarListaDeVotacao(pinDoVotante) {
     divListaPresentes.innerHTML = "";
@@ -207,101 +250,117 @@ function montarListaDeVotacao(pinDoVotante) {
     btnConfirmarVotos.classList.remove("oculto");
 }
 
-btnConfirmarVotos.addEventListener("click", () => {
-    if (!votanteAtual) return;
+if (btnConfirmarVotos) {
+    btnConfirmarVotos.addEventListener("click", async () => {
+        if (!votanteAtual) return;
 
-    const certeza = confirm(`${votanteAtual.nome}, tem certeza das suas notas? Após confirmar, seu voto será travado.`);
-    if (!certeza) return;
+        const certeza = confirm(`${votanteAtual.nome}, tem certeza das suas notas? Após confirmar, seu voto será travado.`);
+        if (!certeza) return;
 
-    const selects = document.querySelectorAll(".select-nota");
+        const notasEscolhidas = [];
+        document.querySelectorAll(".select-nota").forEach(select => {
+            notasEscolhidas.push({
+                pinAlvo: select.getAttribute("data-pin-alvo"),
+                nota: Number(select.value)
+            });
+        });
 
-    selects.forEach(select => {
-        const pinAlvo = select.getAttribute("data-pin-alvo");
-        const notaEscolhida = Number(select.value);
+        await carregarDoBanco();
 
-        const registroAlvo = estadoEvento.registros.find(r => r.pin === pinAlvo);
-        if (registroAlvo) {
-            registroAlvo.somaNotas += notaEscolhida;
-            registroAlvo.qtdVotos += 1;
+        if (!estadoEvento.votantesConfirmados.includes(votanteAtual.pin)) {
+            notasEscolhidas.forEach(voto => {
+                const registroAlvo = estadoEvento.registros.find(r => r.pin === voto.pinAlvo);
+                if (registroAlvo) {
+                    registroAlvo.somaNotas += voto.nota;
+                    registroAlvo.qtdVotos += 1;
+                }
+            });
+
+            estadoEvento.votantesConfirmados.push(votanteAtual.pin);
+            await salvarNoBanco();
         }
+
+        inputPinVoto.value = "";
+        divListaPresentes.innerHTML = "";
+        btnConfirmarVotos.classList.add("oculto");
+        painelVotacao.classList.add("oculto");
+        painelAdm.classList.add("oculto");
+        votanteAtual = null;
     });
-
-    estadoEvento.votantesConfirmados.push(votanteAtual.pin);
-    salvarEstado();
-    atualizarTela();
-
-    inputPinVoto.value = "";
-    divListaPresentes.innerHTML = "";
-    btnConfirmarVotos.classList.add("oculto");
-    painelVotacao.classList.add("oculto");
-    painelAdm.classList.add("oculto");
-    votanteAtual = null;
-});
+}
 
 // =========================================================
 // 7. BOTÕES DO PAINEL ADMINISTRATIVO (AUTO-FECHAMENTO)
 // =========================================================
-btnLiberarVoto.addEventListener("click", () => {
-    estadoEvento.liberadoManualmente = true;
-    salvarEstado();
-    atualizarTela();
-    painelAdm.classList.add("oculto"); // Volta ao estado inicial sem ADM
-});
+if (btnLiberarVoto) {
+    btnLiberarVoto.addEventListener("click", async () => {
+        await carregarDoBanco();
+        estadoEvento.liberadoManualmente = true;
+        await salvarNoBanco();
+        painelAdm.classList.add("oculto");
+    });
+}
 
-btnNovoEvento.addEventListener("click", () => {
-    const confirmar = confirm("Tem certeza que deseja zerar todo o evento?");
-    if (confirmar) {
-        estadoEvento = {
-            registros: [],
-            votantesConfirmados: [],
-            liberadoManualmente: false
-        };
-        salvarEstado();
-        atualizarTela();
-    }
-    painelAdm.classList.add("oculto"); // Volta ao estado inicial sem ADM
-});
+if (btnNovoEvento) {
+    btnNovoEvento.addEventListener("click", async () => {
+        const confirmar = confirm("Tem certeza que deseja zerar todo o evento?");
+        if (confirmar) {
+            estadoEvento = {
+                registros: [],
+                votantesConfirmados: [],
+                liberadoManualmente: false
+            };
+            await salvarNoBanco();
+        }
+        painelAdm.classList.add("oculto");
+    });
+}
 
 // =========================================================
 // 8. NAVEGAÇÃO PELO TECLADO (TECLA ENTER)
 // =========================================================
-inputPinCadastro.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        // Se for o seu PIN e os outros campos estiverem vazios, já valida para abrir o ADM direto
-        if (inputPinCadastro.value.trim() === "0000" && !inputQuemTirou.value.trim()) {
-            inputQuemTirou.focus();
-        } else {
+if (inputPinCadastro) {
+    inputPinCadastro.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
             inputQuemTirou.focus();
         }
-    }
-});
+    });
+}
 
-inputQuemTirou.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        inputPresente.focus();
-    }
-});
+if (inputQuemTirou) {
+    inputQuemTirou.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            inputPresente.focus();
+        }
+    });
+}
 
-inputPresente.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        btnValidarCadastro.click();
-    }
-});
+if (inputPresente) {
+    inputPresente.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            btnValidarCadastro.click();
+        }
+    });
+}
 
-inputPinVoto.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        btnAcessarLista.click();
-    }
-});
+if (inputPinVoto) {
+    inputPinVoto.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            btnAcessarLista.click();
+        }
+    });
+}
 
 // =========================================================
 // 9. ATUALIZAÇÃO SILENCIOSA DO BOTÃO VOTAR, PÓDIO E TABELA
 // =========================================================
 function atualizarTela() {
+    if (!tabelaCorpo) return;
+
     const todosCadastraram = estadoEvento.registros.length >= PARTICIPANTES.length;
     btnVotar.disabled = !(todosCadastraram || estadoEvento.liberadoManualmente);
 
@@ -332,4 +391,6 @@ function atualizarTela() {
     });
 }
 
-atualizarTela();
+// Sincroniza ao abrir e a cada 4 segundos para os 16 celulares verem tudo ao vivo
+carregarDoBanco();
+setInterval(carregarDoBanco, 4000);
