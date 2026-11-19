@@ -318,13 +318,15 @@ body{
     color: #333;
 }
 .container-texto{
-    text-align: center;
     max-width: 800px;
-    margin: 40px;
+    margin: 60px auto;
+    display: block;
+    box-sizing: border-box;
     padding: 0 20px;
 }
 
-.container-texto h1{
+.container-texto h1, .container-texto h2{
+    text-align: center;
     font-size: 32px;
     font-weight: 700;
     color: #67511E;
@@ -333,7 +335,11 @@ body{
 }
 
 .container-texto p{
+    text-align: justify;
+    text-justify: inter-word;
+    line-height: 1.7;
     font-size: 16px;
+    color: #2c2c2c;
     margin-bottom: 16px;
 }
 
@@ -341,4 +347,12 @@ body{
     margin-left: 20px;
     margin-bottom: 16px;
 
+}
+
+.container-texto .nome-extenso{
+    text-align: center;
+    font-weight: 800;
+    font-size: 18px;
+    color: 28px 0;
+    line-height: 1.5;
 }
