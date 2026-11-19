@@ -55,6 +55,16 @@
             <!-- Botões principais -->
             <button id="botao_PIN">CADASTRO</button>
             <button id="botao_VOTAR">VOTAR</button>
+            
+             <div class="selector-modo">
+                <spam>AMIGO</spam>
+                <label class="switch">
+                    <input type="checkbox" id="modo-selector">
+                    <span class="slider round"></span>
+                </label>
+                <spam>INIMIGO</spam>
+            </div>
+
 
             <!-- Botão de validação do PIN -->
             <div id="registro" class="oculto">
@@ -86,20 +96,16 @@
 
         </section>
 
-        <!-- Pódio -->
-
-        <div class="selector-modo">
-            <spam>AMIGO</spam>
-            <label class="switch">
-                <input type="checkbox" id="modo-selector">
-                <span class="slider round"></span>
-            </label>
-            <spam>INIMIGO</spam>
-        </div>
-
-
-
         <section id="PODIO">
+            <div class="selector-modo">
+                <span>AMIGO</span>
+                <label class="switch">
+                    <input type="checkbox" id="modo-selector">
+                    <span class="slider round"></span>
+                </label>
+                <span>INIMIGO</span>
+            </div>
+
             <h2>Pódio</h2>
             <div class="DEGRAUS">
                 <div class="degrau DEGRAU_2"><span class="nome">---</span></div>
@@ -108,7 +114,6 @@
             </div>
         </section>
 
-        <!-- Tabela de classificação -->
         <section id="CLASSIFICACAO">
             <h2>Classificação</h2>
             <table>
@@ -116,17 +121,15 @@
                     <tr>
                         <th>Posição</th>
                         <th>Nome</th>
-                        <th>Amigo</th>
+                        <th id="coluna-modo">Amigo</th>
                         <th>Presente</th>
                         <th>Nota</th>
                     </tr>
                 </thead>
                 <tbody id="tabela-corpo">
-                    <!-- Conteúdo da tabela será preenchido dinamicamente via JavaScript -->
                 </tbody>
             </table>
         </section>
-
     </main>
 
     <!--Rodapé-->

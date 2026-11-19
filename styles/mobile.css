@@ -81,5 +81,9 @@
         font-size: 14px;  /* Reduz o tamanho da fonte das células da tabela para caber melhor na tela do celular */
     }
 
+    #PODIO h2 {
+    padding-top: 28px;
+}
+
 
 }
