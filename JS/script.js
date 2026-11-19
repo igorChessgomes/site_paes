@@ -404,6 +404,71 @@ function atualizarTela() {
     });
 }
 
+// =========================================================
+// 10. NAVEGAÇÃO PELO TECLADO (TECLA ENTER)
+// =========================================================
+if (inputPinCadastro) {
+    inputPinCadastro.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (inputPinCadastro.value.trim() === "000X" && !inputQuemTirou.value.trim()) {
+                btnValidarCadastro.click();
+            } else {
+                inputQuemTirou.focus();
+            }
+        }
+    });
+}
+
+if (inputQuemTirou) {
+    inputQuemTirou.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            inputPresente.focus();
+        }
+    });
+}
+
+if (inputPresente) {
+    inputPresente.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (inputQuemInimigo) {
+                inputQuemInimigo.focus();
+            } else {
+                btnValidarCadastro.click();
+            }
+        }
+    });
+}
+
+if (inputQuemInimigo) {
+    inputQuemInimigo.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            inputPresenteInimigo.focus();
+        }
+    });
+}
+
+if (inputPresenteInimigo) {
+    inputPresenteInimigo.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            btnValidarCadastro.click();
+        }
+    });
+}
+
+if (inputPinVoto) {
+    inputPinVoto.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            btnAcessarLista.click();
+        }
+    });
+}
+
 // Sincroniza ao abrir e a cada 4 segundos
 carregarDoBanco();
 setInterval(carregarDoBanco, 4000);
