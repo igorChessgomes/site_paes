@@ -375,25 +375,30 @@ body{
 }
 
 .topico-sobre{
-    background-color: #ffffff;
-    border-radius: 2px solid #DB9C31;
-    border-radius: 10px;
+    background-color: rgba(255, 238, 222, 0.88);
+    border: none;
+    border-radius: 12px;
     margin-bottom: 16px;
     overflow: hidden;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 10px rgba(103, 81, 30, 0.12);
 }
 
 .topico-sobre summary{
-    padding: 16 px 20px;
+    padding: 18px 28px;
     font-size: 20px;
     font-weight: 700;
-    background-color: #FFEEDE;
+    color: #67511E;
+    background-color: rgba(219, 156, 49, 0.22);
     cursor: pointer;
     list-style: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
     transition: background-color 0.25s ease;
+}
+
+.topico-sobre summary::-webkit-details-marker{
+    display: none;
 }
 .topico-sobre summary :hover{
     background-color: rgba(255, 111, 43, 0.6);
@@ -409,7 +414,7 @@ body{
     border-bottom: 1px solid #DB9C31;
 }
 .conteudo-topico{
-    padding: 20px;
+    padding: 20px 28px 24px 28px;
 }
 .conteudo-topico ul{
     padding-left: 24px;
