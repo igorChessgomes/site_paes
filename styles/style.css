@@ -316,6 +316,15 @@ body{
     font-style: normal;
     line-height: 1.6;
     color: #333;
+    background-color: #FFEEDE;
+    background-image: url(../imagens/fundo_pao.png);
+    background-repeat: repeat-y;
+    background-position: top center 100px;
+    background-attachment: scroll;
+    background-size: 90%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 .container-texto{
     max-width: 800px;
@@ -355,4 +364,12 @@ body{
     font-size: 18px;
     color: 28px 0;
     line-height: 1.5;
+}
+
+.container-texto, #CONTROLE, #PODIO, #CLASSIFICACAO{
+    background-color: rgba(255,238,222,0.8);
+    box-shadow: rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    margin: 40px auto;
+    max-width: 800px;
 }
