@@ -420,3 +420,17 @@ body{
     padding-left: 24px;
     margin-bottom: 16px;
 }
+
+.lista-explicada dt{
+    font-weight: 800;
+    font-size: 17px;
+    color: #FF6F2B;
+    margin-top: 14px;
+}
+
+.lista-explicada dd{
+    margin-left: 20px;
+    margin-bottom: 12px;
+
+text-align: justify;
+}
