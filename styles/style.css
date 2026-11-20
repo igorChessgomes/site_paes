@@ -373,3 +373,45 @@ body{
     margin: 40px auto;
     max-width: 800px;
 }
+
+.topico-sobre{
+    background-color: #ffffff;
+    border-radius: 2px solid #DB9C31;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+}
+
+.topico-sobre summary{
+    padding: 16 px 20px;
+    font-size: 20px;
+    font-weight: 700;
+    background-color: #FFEEDE;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.25s ease;
+}
+.topico-sobre summary :hover{
+    background-color: rgba(255, 111, 43, 0.2);
+}
+.topico-sobre summary::after{
+    content: "+";
+    font-size: 24px;
+    font-weight: 800;
+    color: #FF6F2B;
+}
+
+.topico-sobre[open] summary{
+    border-bottom: 1px solid #DB9C31;
+}
+.conteudo-topico{
+    padding: 20px;
+}
+.conteudo-topico ul{
+    padding-left: 24px;
+    margin-bottom: 16px;
+}
