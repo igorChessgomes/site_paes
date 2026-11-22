@@ -85,5 +85,14 @@
     padding-top: 28px;
 }
 
+.membro-info{
+    gap: 12px;
+}
+
+.membro-info img{
+    width: 75px;
+    height: 75px;
+}
+
 
 }
