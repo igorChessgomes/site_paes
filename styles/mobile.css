@@ -94,5 +94,44 @@
     height: 75px;
 }
 
+.header-expansivel{
+    position: relative;
+    height: auto;
+    min-height: 120px;
+    overflow: hidden;
+    background-color: rgba(34, 49, 39, 0.75);
+}
+
+.header-expansivel:hover, .header-expansivel:active{
+    height: auto;
+    min-height: 120px;
+}
+
+#MENU{
+    flex-direction: column;
+    padding: 12px 10px;
+    gap: 10px;
+}
+
+#MENU ul{
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+#MENU ul a{
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.trilho-fotos img{
+    width: 160px;
+}
+
+.faixa-fotos-header{
+    display: block !important;
+    position: absolute;
+}
+
 
 }
